@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green Harvest - Home</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f1fff0;
+      color: #333;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 10px 0;
+      border-bottom: 1px solid #c8e6c9;
+    }
+
+    .address {
+      font-size: 14px;
+      color: #4CAF50;
+    }
+
+    .greeting {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .cart-icon {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cart-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: #2e7d32;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -10px;
+      background-color: red;
+      color: white;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+
+    .logout-btn {
+      padding: 6px 12px;
+      background-color: crimson;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .category {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      border: 1px solid #c8e6c9;
+    }
+
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .product {
+      background-color: white;
+      padding: 12px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      transition: transform 0.2s ease;
+    }
+
+    .product:hover {
+      transform: translateY(-3px);
+    }
+
+    .product-name {
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .product img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 5px;
+    }
+
+    .product-price {
+      color: #777;
+      margin-bottom: 10px;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    .buy-btn {
+      padding: 8px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .notification {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      display: none;
+      z-index: 1000;
+    }
+
+    .checkout-modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .checkout-box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    .cart-item {
+      margin-bottom: 10px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-item button {
+      background: crimson;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .checkout-total {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .close-btn {
+      background-color: crimson;
+      color: white;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      float: right;
+    }
+
+    .checkout-btn {
+      background-color: #388e3c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      width: 100%;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="notification" id="notif">Produk ditambahkan ke keranjang!</div>
+
+  <header>
+    <div>
+      <div class="address" id="userAddress">Jl. Siliwangi</div>
+      <div class="greeting" id="greetingText">Halo, pengguna!</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div class="cart-icon" onclick="showCheckout()">
+        <svg viewBox="0 0 24 24">
+          <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm0-2h14v2H7v-2zm0-4h14v2H7v-2zm0-4h14v2H7V8zM3 6h2v12H3V6z"/>
+        </svg>
+        <span class="cart-count" id="cartCount">0</span>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <section class="categories">
+    <div class="category">Vegetable</div>
+    <div class="category">Milk & Cheese</div>
+    <div class="category">Seasonings</div>
+    <div class="category">Sauces</div>
+  </section>
+
+  <section class="products" id="productList"></section>
+
+  <div class="checkout-modal" id="checkoutModal">
+    <div class="checkout-box">
+      <button class="close-btn" onclick="hideCheckout()">Tutup</button>
+      <h3>Keranjang Belanja</h3>
+      <div id="cartItems"></div>
+      <div class="checkout-total" id="cartTotal">Total: Rp 0</div>
+      <button class="checkout-btn" onclick="checkout()">Checkout</button>
+    </div>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("greenharvest_user"));
+    const productList = [
+      { name: "Tomato", price: 5000 },
+      { name: "Lettuce", price: 10000 },
+      { name: "Chili", price: 15000 },
+      { name: "Purple Cabbage", price: 10500 },
+      { name: "Carrot", price: 4000 },
+      { name: "Soybeans", price: 12000 },
+      { name: "Broccoli", price: 8200 },
+      { name: "Black Pepper", price: 20000 }
+    ];
+
+    function getImageFileName(name) {
+      return name.replace(/ /g, '') + ".jpeg";
+    }
+
+    let cart = [];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (user) {
+        document.getElementById("userAddress").textContent = user.address;
+        document.getElementById("greetingText").textContent = "Halo, " + user.username + " 👋";
+      }
+
+      const savedCart = JSON.parse(localStorage.getItem("greenharvest_cart")) || [];
+      cart = savedCart;
+      updateCartCount();
+
+      renderProducts();
+    });
+
+    function renderProducts() {
+      const container = document.getElementById("productList");
+      container.innerHTML = '';
+      productList.forEach((p, i) => {
+        const el = document.createElement("div");
+        el.className = "product";
+        el.innerHTML = `
+          <div class="product-name">${p.name}</div>
+          <img src="${getImageFileName(p.name)}" alt="${p.name}">
+          <div class="product-price">Rp. ${p.price.toLocaleString()}</div>
+          <button class="buy-btn" onclick="addToCart(${i})">Buy</button>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    function addToCart(index) {
+      const product = productList[index];
+      cart.push(product);
+      localStorage.setItem("greenharvest_cart", JSON.stringify(cart));
+      updateCartCount();
+      showNotification("Produk ditambahkan ke keranjang!");
+    }
+
+    function updateCartCount() {
+      document.getElementById("cartCount").textContent = cart.length;
+    }
+
+    function showNotification(msg) {
+      const notif = document.getElementById("notif");
+      notif.textContent = msg;
+      notif.style.display = "block";
+      setTimeout(() => notif.style.display = "none", 2000);
+    }
+
+    function showCheckout() {
+      const modal = document.getElementById("checkoutModal");
+      const items = document.getElementById("cartItems");
+      const total = document.getElementById("cartTotal");
+      items.innerHTML = "";
+
+      let totalHarga = 0;
+      cart.forEach((item, index) => {
+        totalHarga += item.price;
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+          <span>${item.name} - Rp. ${item.price.toLocaleString()}</span>
+          <button onclick="removeFromCart(${index})">Hapus</button>
+        `;
+        items.appendChild(div);
+      });
+
+      total.textContent = "Total: Rp. " + totalHarga.toLocaleString();
+      modal.style.display = "flex";
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem("greenharvest_cart", JSON.stringify(cart));
+      updateCartCount();
+      showCheckout();
+    }
+
+    function hideCheckout() {
+      document.getElementById("checkoutModal").style.display = "none";
+    }
+
+    function checkout() {
+      if (cart.length === 0) {
+        alert("Keranjang kosong.");
+        return;
+      }
+      const history = JSON.parse(localStorage.getItem("greenharvest_history")) || [];
+      const order = {
+        date: new Date().toLocaleString(),
+        products: cart,
+        total: cart.reduce((sum, item) => sum + item.price, 0)
+      };
+      history.push(order);
+      localStorage.setItem("greenharvest_history", JSON.stringify(history));
+
+      alert("Checkout berhasil! Terima kasih telah berbelanja.");
+      cart = [];
+      localStorage.setItem("greenharvest_cart", JSON.stringify(cart));
+      updateCartCount();
+      hideCheckout();
+    }
+
+    function logout() {
+      if (confirm("Apakah Anda yakin ingin logout?")) {
+        localStorage.removeItem("greenharvest_user");
+        localStorage.removeItem("greenharvest_cart");
+        window.location.href = "index.html";
+      }
+    }
+  </script>
+</body>
+</html>

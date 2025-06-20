@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green Harvest - Riwayat Pesanan</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f1fff0;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2e7d32;
+      font-size: 24px;
+    }
+
+    .order-history {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-item {
+      border-bottom: 1px solid #c8e6c9;
+      padding: 12px 0;
+    }
+
+    .order-item:last-child {
+      border-bottom: none;
+    }
+
+    .order-date {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .order-product {
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .order-total {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #4CAF50;
+    }
+
+    .empty {
+      text-align: center;
+      color: #999;
+      padding: 30px;
+      font-size: 16px;
+    }
+
+    .back-btn {
+      display: block;
+      width: fit-content;
+      margin: 30px auto 0;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background-color: #388e3c;
+    }
+  </style>
+</head>
+<body>
+  <h2>Riwayat Pesanan Anda</h2>
+  <div class="order-history" id="historyContainer"></div>
+
+  <a class="back-btn" href="home.html">← Kembali ke Beranda</a>
+
+  <script>
+    const container = document.getElementById("historyContainer");
+    const history = JSON.parse(localStorage.getItem("greenharvest_history")) || [];
+
+    if (history.length === 0) {
+      container.innerHTML = '<div class="empty">Belum ada riwayat pesanan.</div>';
+    } else {
+      history.reverse().forEach(order => {
+        const item = document.createElement("div");
+        item.className = "order-item";
+
+        let products = order.products.map(p => `• ${p.name} - Rp. ${p.price.toLocaleString()}`).join("<br>");
+
+        item.innerHTML = `
+          <div class="order-date">Tanggal: ${order.date}</div>
+          <div class="order-product">${products}</div>
+          <div class="order-total">Total: Rp. ${order.total.toLocaleString()}</div>
+        `;
+        container.appendChild(item);
+      });
+    }
+  </script>
+</body>
+</html>
